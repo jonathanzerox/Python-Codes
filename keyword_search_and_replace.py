@@ -15,14 +15,15 @@ def walk_dir(cur_dir):
     new_file = ''   # variable to hold filename for the new file/file with replaced keyword
 
     for file_name in os.listdir(cur_dir):
-        if(file_name[-3:] == 'php' and os.path.isfile(cur_dir+"/"+file_name)):
+        file_path = os.path.join(cur_dir, file_name)
+        if os.path.isfile(file_path) and file_name.split('.')[-1] == 'php':
 
-            with(open(os.path.abspath(cur_dir+"/"+file_name), 'r')) as open_file:
+            with open(file_path, 'r') as open_file:
                 file_contents = open_file.read()
                 split_data = str(file_contents).replace('Connections/connect.php', 'config/db_settings.php').split(' ')
 
                 old_file = open_file.name
-                another_file = open(os.path.abspath(cur_dir+'/'+'another_file.txt'), 'w')
+                another_file = open(os.path.join(cur_dir, 'another_file.txt'), 'w')
                 another_file.writelines(" ".join(split_data))
 
                 new_file = another_file.name
@@ -33,8 +34,8 @@ def walk_dir(cur_dir):
             os.remove(old_file)
             os.rename(new_file, old_file)
 
-        if(os.path.isdir(cur_dir+'/'+file_name)):
-            walk_dir(cur_dir+'/'+file_name)
+        if(os.path.isdir(file_path)):
+            walk_dir(file_path)
 
 if __name__ == '__main__':
     walk_dir(os.curdir)
